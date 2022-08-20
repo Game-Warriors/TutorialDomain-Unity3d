@@ -13,6 +13,7 @@ namespace GameWarriors.TutorialDomain.Core
 
         public event Action<ITutorialSession> OnTutorialSetup;
         public event Action<ITutorialSession> OnTutorialDone;
+        public event Action<ITutorialSession> OnNextTutorialSelect;
 
         [UnityEngine.Scripting.Preserve]
         public TutorialSystem(IServiceProvider serviceProvider, ITutorialResourceLoader resourceLoader)
@@ -35,13 +36,15 @@ namespace GameWarriors.TutorialDomain.Core
             }
         }
 
-        public void StartTutorialJourney(string sessionName)
+        public ITutorialSession StartTutorialJourney(string sessionName)
         {
             if (!_tutorialTable.ContainsKey(sessionName) && !_doneTutorials.ContainsKey(sessionName))
             {
                 ITutorialSession sessionData = _resourceLoader.LoadResource(sessionName);
                 StartTutorial(sessionData);
+                return sessionData;
             }
+            return null;
         }
 
         public IEnumerable<ITutorialSession> GetCurrentTutorials()
@@ -54,13 +57,16 @@ namespace GameWarriors.TutorialDomain.Core
 
         public void TutorialEnd(ITutorialSession tutorialSession)
         {
+            ITutorialSession nextTutorial = null;
             foreach (string nextSession in tutorialSession.GetNextSessions())
             {
                 _doneTutorials.Add(tutorialSession.TutorialKey, 0);
-                StartTutorialJourney(nextSession);
+                nextTutorial = StartTutorialJourney(nextSession);
             }
             _tutorialTable.Remove(tutorialSession.TutorialKey);
             OnTutorialDone?.Invoke(tutorialSession);
+            if (nextTutorial != null)
+                OnNextTutorialSelect?.Invoke(nextTutorial);
             _resourceLoader.ReleaseTutorialResource(tutorialSession);
         }
 

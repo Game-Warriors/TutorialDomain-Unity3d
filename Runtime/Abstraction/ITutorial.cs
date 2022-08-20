@@ -8,8 +8,10 @@ namespace GameWarriors.TutorialDomain.Abstraction
     {
         event Action<ITutorialSession> OnTutorialSetup;
         event Action<ITutorialSession> OnTutorialDone;
+        event Action<ITutorialSession> OnNextTutorialSelect;
+
         void SetDoneTutorials(IEnumerable<string> doneItems);
-        void StartTutorialJourney(string sessionName);
+        ITutorialSession StartTutorialJourney(string sessionName);
         IEnumerable<ITutorialSession> GetCurrentTutorials();
         void TutorialEnd(ITutorialSession tutorialSession);
 

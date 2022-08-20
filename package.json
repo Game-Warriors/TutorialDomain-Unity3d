@@ -1,6 +1,6 @@
 {
   "name": "com.gamewarriors.tutorialsystem",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "displayName": "Tutorial System",
   "description": "This package provide base structure for manage tutorial start and end session and tutorial progress time line",
   "unity": "2019.1",
