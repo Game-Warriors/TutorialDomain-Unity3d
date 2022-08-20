@@ -37,7 +37,7 @@ namespace GameWarriors.TutorialDomain.Core
 
         public void StartTutorialJourney(string sessionName)
         {
-            if (!_tutorialTable.ContainsKey(sessionName))
+            if (!_tutorialTable.ContainsKey(sessionName) && !_doneTutorials.ContainsKey(sessionName))
             {
                 ITutorialSession sessionData = _resourceLoader.LoadResource(sessionName);
                 StartTutorial(sessionData);
@@ -54,15 +54,10 @@ namespace GameWarriors.TutorialDomain.Core
 
         public void TutorialEnd(ITutorialSession tutorialSession)
         {
-
             foreach (string nextSession in tutorialSession.GetNextSessions())
             {
                 _doneTutorials.Add(tutorialSession.TutorialKey, 0);
-
-                if (!_doneTutorials.ContainsKey(nextSession))
-                {
-                    StartTutorialJourney(nextSession);
-                }
+                StartTutorialJourney(nextSession);
             }
             _tutorialTable.Remove(tutorialSession.TutorialKey);
             OnTutorialDone?.Invoke(tutorialSession);
