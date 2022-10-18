@@ -10,6 +10,7 @@ namespace GameWarriors.TutorialDomain.Core
         private readonly ITutorialResourceLoader _resourceLoader;
         private readonly Dictionary<string, ITutorialSession> _tutorialTable;
         private readonly Dictionary<string, int> _doneTutorials;
+        private readonly Dictionary<string, object> _tutorialAssetTable;
 
         public event Action<ITutorialSession> OnTutorialSetup;
         public event Action<ITutorialSession> OnTutorialDone;
@@ -24,6 +25,7 @@ namespace GameWarriors.TutorialDomain.Core
                 _resourceLoader = new DefaultResourceLoader();
             _tutorialTable = new Dictionary<string, ITutorialSession>();
             _doneTutorials = new Dictionary<string, int>();
+            _tutorialAssetTable = new Dictionary<string, object>();
         }
 
         public void SetDoneTutorials(IEnumerable<string> doneItems)
@@ -34,6 +36,25 @@ namespace GameWarriors.TutorialDomain.Core
                 if (!string.IsNullOrEmpty(item))
                     _doneTutorials.Add(item, 0);
             }
+        }
+
+        public void AddTutorialAsset(string assetName, object asset)
+        {
+            _tutorialAssetTable.Add(assetName, asset);
+        }
+
+        public object RemoveTutorialAsset(string assetName)
+        {
+            if (_tutorialAssetTable.TryGetValue(assetName, out var asset))
+            {
+                return asset;
+            }
+            return null;
+        }
+
+        public void ClearAllTutorialAssets()
+        {
+            _tutorialAssetTable.Clear();
         }
 
         public ITutorialSession StartTutorialJourney(string sessionName)

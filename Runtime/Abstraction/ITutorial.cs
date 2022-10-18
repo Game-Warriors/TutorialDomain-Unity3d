@@ -10,6 +10,10 @@ namespace GameWarriors.TutorialDomain.Abstraction
         event Action<ITutorialSession> OnTutorialDone;
         event Action<ITutorialSession> OnNextTutorialSelect;
 
+        void AddTutorialAsset(string assetName, object asset);
+        object RemoveTutorialAsset(string assetName);
+        void ClearAllTutorialAssets();
+
         void SetDoneTutorials(IEnumerable<string> doneItems);
         ITutorialSession StartTutorialJourney(string sessionName);
         IEnumerable<ITutorialSession> GetCurrentTutorials();
